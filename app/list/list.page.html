@@ -1,0 +1,28 @@
+<h2 class="text-center">{{currentHour | greeting}}{{name}}</h2>
+<div class="row bottomMargin">
+    <h3 class="col-md-1"></h3>
+    <h3 class="col-md-3">Today is {{currentDate | date : "EEEE"}}.</h3>
+    <h3 class="col-md-6" *ngIf="currentList">Here is your {{currentList.listName}} to do list for {{currentDate | date : "EEEE"}}.</h3>
+</div>
+
+<div>
+    <form (ngSubmit)="addList()">
+        <!--<div class="form-control">-->
+            <div class="col-md-4"></div>
+            <label class="form-inline">
+                <input type="text" class="form-control" [(ngModel)]="newListName" name="text">
+                <button class="btn btn-primary">Create List</button>
+            </label>
+        <!--</div>-->
+    </form>
+</div>
+
+<div *ngIf="myLists.length">
+    <ul class="nav nav-tabs myFooter">
+        <li *ngFor="let list of myLists">
+            <a data-toggle="tab">
+                <span (click)="onClickList(list)">{{list.listName}}</span>
+            </a>
+        </li>
+    </ul>
+</div>
