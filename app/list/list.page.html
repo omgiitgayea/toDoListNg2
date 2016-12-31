@@ -21,7 +21,7 @@
     <ul class="nav nav-tabs myFooter">
         <li *ngFor="let list of myLists">
             <a data-toggle="tab">
-                <span (click)="onClickList(list)">{{list.listName}}</span>
+                <list-tab [listName]="list.listName"></list-tab>
             </a>
         </li>
     </ul>

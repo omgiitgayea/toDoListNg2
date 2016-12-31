@@ -1,0 +1,14 @@
+<span [ngSwitch]="editingListName">
+    <label *ngSwitchCase="true" class="form-inline">
+        <input type="text" class="form-control" [(ngModel)]="listName">
+        <button class="btn btn-success" (click)="saveNewName()">Save</button>
+        <button class="btn btn-warning" (click)="resetListName()">Reset</button>
+    </label>
+
+    <span *ngSwitchDefault (click)="changeList()">{{listName}} &nbsp;</span>
+</span>
+
+<span *ngIf="!editingListName">
+    <span class="glyphicon glyphicon-pencil text-primary" (click)="editListName()">&nbsp;</span>
+    <span class="glyphicon glyphicon-remove-circle text-danger" (click)="deleteList()"></span>
+</span>

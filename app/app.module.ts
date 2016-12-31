@@ -9,6 +9,7 @@ import {ListComponent} from "./list/list.component";
 import {NoPageComponent} from "./noPage/noPage.component";
 import {ListService} from "./list/list.service";
 import {GreetingPipe} from "./pipes/timeGreeting.pipe";
+import {ListTabsComponent} from "./list/listTabs/listTabs.component"
 
 @NgModule({
     imports: [
@@ -26,6 +27,7 @@ import {GreetingPipe} from "./pipes/timeGreeting.pipe";
         AboutComponent,
         ListComponent,
         NoPageComponent,
+        ListTabsComponent,
         GreetingPipe
     ],
     providers: [ListService],
