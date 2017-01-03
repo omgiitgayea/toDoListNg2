@@ -1,7 +1,8 @@
 /**
  * Created by Godai Yuusaku on 12/23/2016.
  */
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {Subscription} from "rxjs";
 
 import {List} from "./list";
 import {ListService} from "./list.service";
@@ -10,16 +11,28 @@ import {ListService} from "./list.service";
     selector: "list",
     templateUrl: "/app/list/list.page.html"
 })
-export class ListComponent {
+export class ListComponent implements OnInit {
     name: string;
     newListName: string;
     myLists: Array<List>;
     currentList: List;
+    listService: ListService;
+    listSubscription: Subscription;
 
     constructor(private listService: ListService) {
-        this.name = listService.name;
-        this.myLists = listService.myLists;
-        this.currentList = listService.currentList;
+        this.listService = listService;
+        this.listSubscription = listService.myCurrentList$.subscribe(
+            changeList => {
+                this.myLists = changeList.myLists;
+                this.currentList = changeList.currentList;
+            }
+        )
+    }
+
+    ngOnInit(): void
+    {
+        this.name = this.listService.name;
+        // put the rest here
     }
 
     currentDate: number = Date.now();
