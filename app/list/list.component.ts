@@ -19,6 +19,10 @@ export class ListComponent implements OnInit {
     currentList: List;
     myListService: ListService;
     listSubscription: Subscription;
+    itemErrorSubscription: Subscription;
+    selected: Array<boolean> = [];
+    itemError: boolean = false;
+    listError: boolean = false;
 
     constructor(private listService: ListService) {
         this.myListService = listService;
@@ -27,7 +31,13 @@ export class ListComponent implements OnInit {
                 this.myLists = changeList.myLists;
                 this.currentList = changeList.currentList;
             }
-        )
+        );
+        this.itemErrorSubscription = listService.duplicateItemError$.subscribe(
+            itemErrors => {
+                this.itemError = itemErrors.duplicateItem;
+                this.listError = itemErrors.duplicateList;
+            }
+        );
     }
 
     ngOnInit(): void
@@ -35,6 +45,8 @@ export class ListComponent implements OnInit {
         this.name = this.listService.name;
         this.myLists = this.listService.myLists;
         this.currentList = this.listService.currentList;
+        this.itemError = this.listService.duplicateItem;
+        this.listError = this.listService.duplicateList;
     }
 
     currentDate: number = Date.now();
@@ -42,22 +54,48 @@ export class ListComponent implements OnInit {
     currentHour: number = this.theDate.getHours();
 
     addList(): void {
-        if (this.newListName) {
-            let newList: List = new List(this.newListName);
-            this.listService.setCurrentList(newList);
-            this.myLists.push(newList);
-            this.newListName = "";
+        //need error check for duplicate name
+        this.listService.setListError(false);
+        for (let i: number = 0; i < this.myLists.length; i++)
+        {
+            if (this.myLists[i].listName == this.newListName)
+            {
+                this.listService.setListError(true);
+                break;
+            }
         }
+        if (!this.listError) {
+            if (this.newListName) {
+                let newList: List = new List(this.newListName);
+                this.listService.setCurrentList(newList);
+                this.myLists.push(newList);
+            }
+        }
+        this.newListName = "";
     }
 
     addItem(): void {
-        if (this.newItemName) {
-            this.currentList.listItems.push(this.newItemName);
-            this.newItemName = "";
+        this.listService.setItemError(false);
+        if (this.currentList.listItems.indexOf(this.newItemName) == -1) {
+            if (this.newItemName) {
+                this.currentList.listItems.push(this.newItemName);
+            }
         }
+        else {
+            this.listService.setItemError(true);
+        }
+        this.newItemName = "";
     }
 
     clearLists(): void {
         this.listService.clearLists();
+    }
+
+    clearItems(): void {
+        this.listService.clearItems();
+    }
+
+    clearCompleted(): void {
+        this.listService.clearCompleted(this.selected);
     }
 }

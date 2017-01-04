@@ -9,58 +9,51 @@
 <div *ngIf="currentList">
     <div *ngFor="let item of currentList.listItems" class="checkbox">
         <div class="col-md-4"></div>
-        <input type="checkbox">
+        <input type="checkbox" [(ngModel)]="selected[item]">
         <list-item [itemName]="item"></list-item>
     </div>
-</div>
-<!--<div ng-if="vm.currentList">-->
-<!--<div ng-repeat="item in vm.currentList.items" class="checkbox">-->
-<!--<div class="col-md-4"></div>-->
-<!--<input type="checkbox" ng-model="vm.selected[item]" ng-click="vm.sendSelected()">-->
-<!--<list-items item-name="{{item}}"></list-items>-->
-<!--</div>-->
-<!--</div>-->
 
-<!--<div>-->
-<!--<form ng-submit="vm.addItem()" ng-if="vm.listArray.length">-->
-<!--<div class="form-inline form-group row">-->
-<!--<div class="col-md-1"></div>-->
-<!--<label class="col-md-3">Add an item to your list:</label>-->
-<!--<input type="text" class="bottomBorder" ng-model="vm.newItem" name="text"/>-->
+    <div>
+        <form (ngSubmit)="addItem()" *ngIf="myLists.length">
+            <div class="col-md-1"></div>
+            <div class="form-inline">
+                <div class="col-md-3">Add an item to your list:</div>
+                <div class="col-md-8"><input type="text" class="form-control" [(ngModel)]="newItemName" name="text"/></div>
+            </div>
+        </form>
+    </div>
 
-<div>
-    <form (ngSubmit)="addItem()" *ngIf="myLists.length">
-        <div class="col-md-1"></div>
-        <div class="form-inline">
-            <div class="col-md-3">Add an item to your list:</div>
-            <input type="text" class="form-control" [(ngModel)]="newItemName" name="text"/>
+    <div *ngIf="itemError">
+        <div class="col-md-4"></div>
+        <div class="col-md-8">Please do not put in a duplicate item</div>
+    </div>
+
+    <div class="row" *ngIf="currentList.listItems.length">
+        <div class="col-md-4"></div>
+        <div class="col-md-3">
+            <button class="btn btn-warning" (click)="clearCompleted()">
+                Clear Completed Items
+            </button>
         </div>
-    </form>
+        <button class="btn btn-danger" (click)="clearItems()">
+            Clear List
+        </button>
+    </div>
 </div>
-<!--</div>-->
-<!--</form>-->
-<!--</div>-->
-
-<!--<div ng-if="vm.currentList">-->
-<!--<div class="row bottomMargin">-->
-<!--<div class="col-md-4"></div>-->
-<!--<div class="col-md-3">-->
-<!--<button class="btn btn-warning" ng-click="vm.clearCompleted()" ng-if="vm.currentList.items.length">-->
-<!--Clear Completed Items-->
-<!--</button>-->
-<!--</div>-->
-<!--<button class="btn btn-danger" ng-click="vm.clear()" ng-if="vm.currentList.items.length">Clear List</button>-->
-<!--</div>-->
-<!--</div>-->
 
 <div>
     <form (ngSubmit)="addList()">
         <div class="col-md-4"></div>
-        <label class="form-inline">
+        <label class="form-inline col-md-8">
             <input type="text" class="form-control" [(ngModel)]="newListName" name="text">
             <button class="btn btn-primary">Create List</button>
         </label>
     </form>
+</div>
+
+<div *ngIf="listError">
+    <div class="col-md-4"></div>
+    <div class="col-md-8">Please do not put in a duplicate list</div>
 </div>
 
 <div>

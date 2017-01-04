@@ -11,22 +11,28 @@ export class ListService {
     name: string = "Dave";
     myLists: Array<List> = [];
     currentList: List;
+    duplicateItem: boolean = false;
+    duplicateList: boolean = false;
 
     myCurrentList = new Subject<any>();
+    duplicateItemError = new Subject<any>();
 
     myCurrentList$ = this.myCurrentList.asObservable();
+    duplicateItemError$ = this.duplicateItemError.asObservable();
 
-    sendCurrentList(list:List, lists:Array<List> = this.myLists): void
-    {
-        let fred:any = {currentList: list, myLists: lists};
-        this.myCurrentList.next(fred);
+    sendCurrentList(): void {
+        this.myCurrentList.next({currentList: this.currentList, myLists: this.myLists});
+    }
+
+    sendErrors(): void {
+        this.duplicateItemError.next({duplicateList: this.duplicateList, duplicateItem: this.duplicateItem});
     }
 
     getList(listName: string): void {
         for (let i: number = 0; i < this.myLists.length; i++) {
             if (this.myLists[i].listName == listName) {
                 this.currentList = this.myLists[i];
-                this.sendCurrentList(this.currentList);
+                this.sendCurrentList();
                 break;
             }
         }
@@ -34,16 +40,26 @@ export class ListService {
 
     setCurrentList(newList: List): void {
         this.currentList = newList;
-        this.sendCurrentList(this.currentList);
+        this.sendCurrentList();
     }
 
     saveNewListName(newName: string, oldName: string): void {
-        for (let i: number = 0; i < this.myLists.length; i++) {
-            if (this.myLists[i].listName == oldName) {
-                this.myLists[i].listName = newName;
-                break;
+        this.duplicateList = false;
+        if (newName != oldName)
+            for (let i: number = 0; i < this.myLists.length; i++) {
+                if (this.myLists[i].listName == newName) {
+                    this.duplicateList = true;
+                    break;
+                }
             }
-        }
+        if (!this.duplicateList)
+            for (let i: number = 0; i < this.myLists.length; i++) {
+                if (this.myLists[i].listName == oldName) {
+                    this.myLists[i].listName = newName;
+                    break;
+                }
+            }
+        this.sendErrors();
     }
 
     deleteList(listName: string): void {
@@ -57,21 +73,52 @@ export class ListService {
         if (this.currentList.listName == listName) {
             this.currentList = this.myLists[0];
         }
-        this.sendCurrentList(this.currentList, this.myLists);
+        this.sendCurrentList();
     }
 
-    clearLists(): void
-    {
+    clearLists(): void {
         this.myLists = [];
         this.currentList = null;
-        this.sendCurrentList(this.currentList, this.myLists);
+        this.sendCurrentList();
     }
 
     deleteItem(itemName: string): void {
-
+        this.currentList.listItems.splice(this.currentList.listItems.indexOf(itemName), 1);
     }
 
     saveNewItemName(itemName: string, oldItemName: string): void {
+        if (itemName != oldItemName)
+            if (this.currentList.listItems.indexOf(itemName) == -1) {
+                this.currentList.listItems.splice(this.currentList.listItems.indexOf(oldItemName), 1, itemName);
+                this.duplicateItem = false;
+            }
+            else {
+                this.duplicateItem = true;
+            }
+        this.sendErrors();
+    }
 
+    clearItems(): void {
+        this.currentList.listItems = [];
+        this.sendCurrentList();
+    }
+
+    clearCompleted(completedList: any): void {
+        for (let key in completedList) {
+            if (this.currentList.listItems.indexOf(key) != -1 && completedList[key]) {
+                this.currentList.listItems.splice(this.currentList.listItems.indexOf(key), 1);
+                delete completedList[key];
+            }
+        }
+    }
+
+    setItemError(itemError: boolean): void {
+        this.duplicateItem = itemError;
+        this.sendErrors();
+    }
+
+    setListError(listError: boolean): void {
+        this.duplicateList = listError;
+        this.sendErrors();
     }
 }
