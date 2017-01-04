@@ -6,6 +6,13 @@
         "EEEE"}}.</h3>
 </div>
 
+<div *ngIf="currentList">
+    <div *ngFor="let item of currentList.listItems" class="checkbox">
+        <div class="col-md-4"></div>
+        <input type="checkbox">
+        <list-item [itemName]="item"></list-item>
+    </div>
+</div>
 <!--<div ng-if="vm.currentList">-->
 <!--<div ng-repeat="item in vm.currentList.items" class="checkbox">-->
 <!--<div class="col-md-4"></div>-->

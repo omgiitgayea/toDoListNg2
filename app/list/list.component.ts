@@ -52,7 +52,8 @@ export class ListComponent implements OnInit {
 
     addItem(): void {
         if (this.newItemName) {
-            console.log(this.newItemName);
+            this.currentList.listItems.push(this.newItemName);
+            this.newItemName = "";
         }
     }
 
