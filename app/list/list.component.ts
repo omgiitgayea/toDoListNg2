@@ -14,13 +14,14 @@ import {ListService} from "./list.service";
 export class ListComponent implements OnInit {
     name: string;
     newListName: string;
+    newItemName: string;
     myLists: Array<List>;
     currentList: List;
-    listService: ListService;
+    myListService: ListService;
     listSubscription: Subscription;
 
     constructor(private listService: ListService) {
-        this.listService = listService;
+        this.myListService = listService;
         this.listSubscription = listService.myCurrentList$.subscribe(
             changeList => {
                 this.myLists = changeList.myLists;
@@ -32,7 +33,8 @@ export class ListComponent implements OnInit {
     ngOnInit(): void
     {
         this.name = this.listService.name;
-        // put the rest here
+        this.myLists = this.listService.myLists;
+        this.currentList = this.listService.currentList;
     }
 
     currentDate: number = Date.now();
@@ -42,11 +44,19 @@ export class ListComponent implements OnInit {
     addList(): void {
         if (this.newListName) {
             let newList: List = new List(this.newListName);
-            // this.currentList = newList;
             this.listService.setCurrentList(newList);
-            this.currentList = this.listService.currentList;
             this.myLists.push(newList);
             this.newListName = "";
         }
+    }
+
+    addItem(): void {
+        if (this.newItemName) {
+            console.log(this.newItemName);
+        }
+    }
+
+    clearLists(): void {
+        this.listService.clearLists();
     }
 }

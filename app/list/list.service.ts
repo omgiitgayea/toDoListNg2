@@ -12,13 +12,13 @@ export class ListService {
     myLists: Array<List> = [];
     currentList: List;
 
-    myCurrentList:Subject = new Subject<List>();
+    myCurrentList = new Subject<any>();
 
     myCurrentList$ = this.myCurrentList.asObservable();
 
-    sendCurrentList(list:List, agsdkjlkastyjkl:Array<List>): void
+    sendCurrentList(list:List, lists:Array<List> = this.myLists): void
     {
-        let fred:any = {currentList: list, myLists: agsdkjlkastyjkl};
+        let fred:any = {currentList: list, myLists: lists};
         this.myCurrentList.next(fred);
     }
 
@@ -26,7 +26,7 @@ export class ListService {
         for (let i: number = 0; i < this.myLists.length; i++) {
             if (this.myLists[i].listName == listName) {
                 this.currentList = this.myLists[i];
-                this.sendCurrentList(this.currentList, this.myLists);
+                this.sendCurrentList(this.currentList);
                 break;
             }
         }
@@ -34,6 +34,7 @@ export class ListService {
 
     setCurrentList(newList: List): void {
         this.currentList = newList;
+        this.sendCurrentList(this.currentList);
     }
 
     saveNewListName(newName: string, oldName: string): void {
@@ -56,5 +57,21 @@ export class ListService {
         if (this.currentList.listName == listName) {
             this.currentList = this.myLists[0];
         }
+        this.sendCurrentList(this.currentList, this.myLists);
+    }
+
+    clearLists(): void
+    {
+        this.myLists = [];
+        this.currentList = null;
+        this.sendCurrentList(this.currentList, this.myLists);
+    }
+
+    deleteItem(itemName: string): void {
+
+    }
+
+    saveNewItemName(itemName: string, oldItemName: string): void {
+
     }
 }
