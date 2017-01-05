@@ -9,6 +9,7 @@
 <div *ngIf="currentList">
     <div *ngFor="let item of currentList.listItems" class="checkbox">
         <div class="col-md-4"></div>
+        <!--need to add something to keep track of checked boxes-->
         <input type="checkbox" [(ngModel)]="selected[item]">
         <list-item [itemName]="item"></list-item>
     </div>
