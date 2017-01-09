@@ -11,13 +11,15 @@ import {ListService} from "./list.service";
     selector: "list",
     templateUrl: "/app/list/list.page.html",
     animations: [
-        trigger("myTrigger", [
-            state("fadeIn", style({
-                opacity: "1"
-            })),
+        trigger("itemEnter", [
+            state("in", style({opacity: "1", transform: "translateX(0)"})),
+
             transition("void => *", [
-                style({opacity: "0", transform: "scale(10)"}),
-                animate("500ms 0s ease-in")
+                style({opacity: 0, transform: "translateX(-100%)"}),
+                animate("500ms ease-out")
+            ]),
+            transition("* => void", [
+                animate("500ms ease-out", style({transform: "scaleY(0)", opacity: 0}))
             ])
         ])
     ]
@@ -31,11 +33,11 @@ export class ListComponent implements OnInit {
     myListService: ListService;
     listSubscription: Subscription;
     itemErrorSubscription: Subscription;
-    selected: Array<boolean> = [];
+    selected: Array<boolean>;
     itemError: boolean = false;
     listError: boolean = false;
 
-    state: string = "fadeIn";
+    // state: string = "fadeIn";
 
     constructor(private listService: ListService) {
         this.myListService = listService;
@@ -53,13 +55,13 @@ export class ListComponent implements OnInit {
         );
     }
 
-    ngOnInit(): void
-    {
+    ngOnInit(): void {
         this.name = this.listService.name;
         this.myLists = this.listService.myLists;
         this.currentList = this.listService.currentList;
         this.itemError = this.listService.duplicateItem;
         this.listError = this.listService.duplicateList;
+        this.selected = this.listService.selected;
     }
 
     currentDate: number = Date.now();
@@ -69,10 +71,8 @@ export class ListComponent implements OnInit {
     addList(): void {
         //need error check for duplicate name
         this.listService.setListError(false);
-        for (let i: number = 0; i < this.myLists.length; i++)
-        {
-            if (this.myLists[i].listName == this.newListName)
-            {
+        for (let i: number = 0; i < this.myLists.length; i++) {
+            if (this.myLists[i].listName == this.newListName) {
                 this.listService.setListError(true);
                 break;
             }
@@ -110,5 +110,9 @@ export class ListComponent implements OnInit {
 
     clearCompleted(): void {
         this.listService.clearCompleted(this.selected);
+    }
+
+    updateSelected(): void {
+        this.listService.selected = this.selected;
     }
 }

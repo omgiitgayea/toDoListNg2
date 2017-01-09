@@ -13,6 +13,7 @@ export class ListService {
     currentList: List;
     duplicateItem: boolean = false;
     duplicateList: boolean = false;
+    selected: Array<any> = [];
 
     myCurrentList = new Subject<any>();
     duplicateItemError = new Subject<any>();

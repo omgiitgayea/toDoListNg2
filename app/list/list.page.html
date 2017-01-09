@@ -10,8 +10,8 @@
     <div *ngFor="let item of currentList.listItems" class="checkbox" >
         <div class="col-md-4"></div>
         <!--need to add something to keep track of checked boxes-->
-        <div class="col-md-8" [@myTrigger]="state">
-            <input type="checkbox" [(ngModel)]="selected[item]">
+        <div class="col-md-8" [@itemEnter]="state">
+            <input type="checkbox" [(ngModel)]="selected[item]" (click)="updateSelected()">
             <list-item [itemName]="item"></list-item>
         </div>
     </div>
@@ -60,12 +60,12 @@
 </div>
 
 <div>
-    <button class="btn btn-danger" (click)="clearLists()" *ngIf="myLists.length">Delete Lists</button>
+    <button class="btn btn-danger" (click)="clearLists()" *ngIf="myLists.length" [@itemEnter]="state">Delete Lists</button>
 </div>
 
-<div *ngIf="myLists.length">
+<div *ngIf="myLists.length" [@itemEnter]="state">
     <ul class="nav nav-tabs myFooter">
-        <li *ngFor="let list of myLists" [@myTrigger]="state">
+        <li *ngFor="let list of myLists" [@itemEnter]="state">
             <a data-toggle="tab">
                 <list-tab [listName]="list.listName"></list-tab>
             </a>
