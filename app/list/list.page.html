@@ -7,11 +7,13 @@
 </div>
 
 <div *ngIf="currentList">
-    <div *ngFor="let item of currentList.listItems" class="checkbox">
+    <div *ngFor="let item of currentList.listItems" class="checkbox" >
         <div class="col-md-4"></div>
         <!--need to add something to keep track of checked boxes-->
-        <input type="checkbox" [(ngModel)]="selected[item]">
-        <list-item [itemName]="item"></list-item>
+        <div class="col-md-8" [@myTrigger]="state">
+            <input type="checkbox" [(ngModel)]="selected[item]">
+            <list-item [itemName]="item"></list-item>
+        </div>
     </div>
 
     <div>
@@ -63,7 +65,7 @@
 
 <div *ngIf="myLists.length">
     <ul class="nav nav-tabs myFooter">
-        <li *ngFor="let list of myLists">
+        <li *ngFor="let list of myLists" [@myTrigger]="state">
             <a data-toggle="tab">
                 <list-tab [listName]="list.listName"></list-tab>
             </a>

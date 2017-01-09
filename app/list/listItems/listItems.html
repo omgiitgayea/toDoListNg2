@@ -1,6 +1,6 @@
 <span [ngSwitch]="editingItemName">
     <label *ngSwitchCase="true" class="form-inline">
-        <input type="text" class="form-control" [(ngModel)]="itemName">
+        <input type="text" class="form-control" [(ngModel)]="itemName" (keyup.enter)="saveNewName()">
         <button class="btn btn-success" (click)="saveNewName()">Save</button>
         <button class="btn btn-warning" (click)="resetItemName()">Reset</button>
     </label>

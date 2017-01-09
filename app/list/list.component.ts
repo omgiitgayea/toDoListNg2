@@ -1,7 +1,7 @@
 /**
  * Created by Godai Yuusaku on 12/23/2016.
  */
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, trigger, style, state, transition, animate, keyframes} from '@angular/core';
 import {Subscription} from "rxjs";
 
 import {List} from "./list";
@@ -9,7 +9,18 @@ import {ListService} from "./list.service";
 
 @Component({
     selector: "list",
-    templateUrl: "/app/list/list.page.html"
+    templateUrl: "/app/list/list.page.html",
+    animations: [
+        trigger("myTrigger", [
+            state("fadeIn", style({
+                opacity: "1"
+            })),
+            transition("void => *", [
+                style({opacity: "0", transform: "scale(10)"}),
+                animate("500ms 0s ease-in")
+            ])
+        ])
+    ]
 })
 export class ListComponent implements OnInit {
     name: string;
@@ -23,6 +34,8 @@ export class ListComponent implements OnInit {
     selected: Array<boolean> = [];
     itemError: boolean = false;
     listError: boolean = false;
+
+    state: string = "fadeIn";
 
     constructor(private listService: ListService) {
         this.myListService = listService;
